@@ -1,0 +1,18 @@
+# 生产环境：全部凭证由环境注入；禁止 mock（见 zhibiao.dify.mode 强制校验）
+spring:
+  data:
+    redis:
+      ssl:
+        enabled: ${ZB_REDIS_SSL:false}
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: lax
+
+zhibiao:
+  dify:
+    mode: real

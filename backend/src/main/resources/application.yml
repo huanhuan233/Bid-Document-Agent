@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: bid-platform
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:api,dev}
+  datasource:
+    url: ${ZB_DB_URL:jdbc:mysql://localhost:3306/bid_platform?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${ZB_DB_USER:bid}
+    password: ${ZB_DB_PASSWORD:bid}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${ZB_DB_POOL_MAX:16}
+      minimum-idle: 2
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  data:
+    redis:
+      host: ${ZB_REDIS_HOST:localhost}
+      port: ${ZB_REDIS_PORT:6379}
+      password: ${ZB_REDIS_PASSWORD:}
+      timeout: 3s
+      lettuce:
+        pool:
+          max-active: 16
+  session:
+    redis:
+      namespace: bid:sess
+      flush-mode: on-save
+  rabbitmq:
+    host: ${ZB_RABBIT_HOST:localhost}
+    port: ${ZB_RABBIT_PORT:5672}
+    username: ${ZB_RABBIT_USER:bid}
+    password: ${ZB_RABBIT_PASSWORD:bid}
+    virtual-host: ${ZB_RABBIT_VHOST:/}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+  servlet:
+    multipart:
+      max-file-size: ${ZB_UPLOAD_MAX_SIZE:200MB}
+      max-request-size: ${ZB_UPLOAD_MAX_REQUEST:220MB}
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss'Z'
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+server:
+  port: ${ZB_SERVER_PORT:8080}
+  forward-headers-strategy: framework
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_uuid
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z',UTC} %-5level [trace=%X{traceId:-}] [%thread] %logger{36} - %msg%n"
+  level:
+    com.zhibiao.platform: info
+
+zhibiao:
+  security:
+    # 初始管理员凭证由环境注入；缺省为空，禁止硬编码默认密码
+    bootstrap-admin-username: ${ZB_BOOTSTRAP_ADMIN_USERNAME:}
+    bootstrap-admin-password: ${ZB_BOOTSTRAP_ADMIN_PASSWORD:}
+    session-max-idle-minutes: 720
+  storage:
+    endpoint: ${ZB_MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${ZB_MINIO_ACCESS_KEY:}
+    secret-key: ${ZB_MINIO_SECRET_KEY:}
+    bucket: ${ZB_MINIO_BUCKET:bid-platform}
+    presign-ttl-seconds: 300
+  secrets:
+    # 主密钥（Base64, 32 字节），用于 Dify API Key 落库加密
+    master-key: ${ZB_SECRET_MASTER_KEY:}
+  dify:
+    # real=真实 Dify 适配器；mock=显式开发测试替身（结果必须标注，禁止生产静默回退）
+    mode: ${ZB_DIFY_MODE:mock}
+  task:
+    lease-seconds: 120
+    heartbeat-seconds: 30
+    event-retention-hours: 168
+    recovery-interval-seconds: 30
+    outbox-dispatch-interval-seconds: 2
+    outbox-batch-size: 100
+    max-attempt-retry: 3

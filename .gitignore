@@ -1,0 +1,64 @@
+# ===== 依赖 / 构建产物 =====
+node_modules/
+dist/
+dist-ssr/
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.war
+
+# ===== 日志 / 临时文件 =====
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+*.tmp
+*.bak
+compile.log
+compile.done
+
+# ===== 运行时数据（本地 docker 卷 / 上传文件等） =====
+data/
+uploads/
+volumes/
+
+# ===== 环境变量与密钥（含真实凭证的本地覆盖文件） =====
+*.local
+!.env.example
+backend/src/main/resources/application-local.yml
+
+# ===== IDE / 编辑器 =====
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.history/
+*.swp
+
+# ===== 操作系统 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ===== 本仓库根目录的非源码内容 =====
+/*
+!/.gitignore
+!/README.md
+!/backend
+!/frontend
+
+# backend / frontend 内部再按通用规则忽略
+__pycache__/
+*.pyc
+.cache/
+coverage/
+coverage.json
+.nitro/
+.turbo/

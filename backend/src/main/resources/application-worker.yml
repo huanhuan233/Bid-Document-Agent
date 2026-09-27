@@ -1,0 +1,12 @@
+# worker 进程：执行任务、调用 Dify、结果归档、任务恢复、Outbox 投递
+spring:
+  main.web-application-type: servlet
+
+server:
+  port: ${ZB_WORKER_PORT:8081}
+
+zhibiao:
+  role: worker
+  task:
+    worker-id: ${ZB_WORKER_ID:worker-1}
+    concurrency: ${ZB_WORKER_CONCURRENCY:4}

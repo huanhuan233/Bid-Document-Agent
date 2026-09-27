@@ -1,0 +1,6 @@
+# api 进程：鉴权、管理接口、创建任务、结果读取、前端 SSE
+spring:
+  main.web-application-type: servlet
+
+zhibiao:
+  role: api

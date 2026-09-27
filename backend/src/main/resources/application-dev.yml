@@ -1,0 +1,12 @@
+# 开发环境：本机 MySQL/Redis/RabbitMQ/MinIO，Dify 使用显式 mock 模式
+spring:
+  jpa.show-sql: false
+
+logging:
+  level:
+    com.zhibiao.platform: debug
+    org.springframework.security: info
+
+zhibiao:
+  dify:
+    mode: mock
