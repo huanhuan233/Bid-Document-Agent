@@ -23,6 +23,17 @@ export function useRouterPush(inSetup = true) {
     params?: Record<string, string>;
   }
 
+  /** 支持 { key, params, query } 形式的路由跳转（业务页面统一使用） */
+  type RouterPushTarget = RouteLocationRaw | ({ key: RouteKey } & RouterPushOptions);
+
+  function routerPushWrapper(target: RouterPushTarget) {
+    if (target && typeof target === 'object' && 'key' in target && typeof target.key === 'string') {
+      const { key, ...rest } = target;
+      return routerPushByKey(key, rest);
+    }
+    return routerPush(target as RouteLocationRaw);
+  }
+
   async function routerPushByKey(key: RouteKey, options?: RouterPushOptions) {
     const { query, params } = options || {};
 
@@ -109,7 +120,7 @@ export function useRouterPush(inSetup = true) {
   }
 
   return {
-    routerPush,
+    routerPush: routerPushWrapper,
     routerBack,
     routerPushByKey,
     routerPushByKeyWithMetaQuery,

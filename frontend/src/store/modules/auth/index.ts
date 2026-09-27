@@ -7,9 +7,19 @@ import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
+import { demoAuthUser } from '@/fixtures/bid/auth';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
 import { clearAuthStorage, getToken } from './shared';
+
+/** 仅在显式 demo 模式下允许演示登录（不请求后端、不发演示写请求） */
+function isBidDemoMode() {
+  return (import.meta.env.VITE_BID_DATA_MODE || 'demo') === 'demo';
+}
+
+function isDemoToken(token: string | null) {
+  return Boolean(token && token.startsWith('demo-'));
+}
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -97,6 +107,24 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   async function login(userName: string, password: string, redirect = true) {
     startLoading();
 
+    // 演示模式：跳过后端登录，使用本地演示账号（任何非空用户名/密码均可）
+    if (isBidDemoMode()) {
+      const demoToken = 'demo-session-zhibiaoyun';
+      localStg.set('token', demoToken);
+      localStg.set('refreshToken', 'demo-refresh');
+      Object.assign(userInfo, demoAuthUser, { userName: userName || demoAuthUser.userName });
+      token.value = demoToken;
+
+      await redirectFromLogin(redirect);
+      window.$notification?.success({
+        title: '演示模式登录成功',
+        message: `欢迎回来，${userInfo.userName}！当前为演示数据模式，不连接后端。`,
+        duration: 4500
+      });
+      endLoading();
+      return;
+    }
+
     const { data: loginToken, error } = await fetchLogin(userName, password);
 
     if (!error) {
@@ -144,6 +172,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   async function getUserInfo() {
+    // 演示模式：本地 token 直接返回演示用户，不请求后端
+    if (isBidDemoMode() && isDemoToken(getToken())) {
+      Object.assign(userInfo, demoAuthUser);
+      return true;
+    }
+
     const { data: info, error } = await fetchGetUserInfo();
 
     if (!error) {

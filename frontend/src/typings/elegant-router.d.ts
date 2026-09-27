@@ -39,6 +39,9 @@ declare module "@elegant-router/types" {
     "alova_request": "/alova/request";
     "alova_scenes": "/alova/scenes";
     "alova_user": "/alova/user";
+    "bid-generate": "/bid-generate";
+    "bid-parse": "/bid-parse";
+    "bid-review": "/bid-review";
     "function": "/function";
     "function_hide-child": "/function/hide-child";
     "function_hide-child_one": "/function/hide-child/one";
@@ -49,6 +52,7 @@ declare module "@elegant-router/types" {
     "function_super-page": "/function/super-page";
     "function_tab": "/function/tab";
     "function_toggle-auth": "/function/toggle-auth";
+    "generate-records": "/generate-records";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
@@ -57,12 +61,15 @@ declare module "@elegant-router/types" {
     "manage_role": "/manage/role";
     "manage_user": "/manage/user";
     "manage_user-detail": "/manage/user-detail/:id";
+    "materials": "/materials";
     "multi-menu": "/multi-menu";
     "multi-menu_first": "/multi-menu/first";
     "multi-menu_first_child": "/multi-menu/first/child";
     "multi-menu_second": "/multi-menu/second";
     "multi-menu_second_child": "/multi-menu/second/child";
     "multi-menu_second_child_home": "/multi-menu/second/child/home";
+    "parse-records": "/parse-records";
+    "parse-result": "/parse-result/:id";
     "plugin": "/plugin";
     "plugin_barcode": "/plugin/barcode";
     "plugin_charts": "/plugin/charts";
@@ -87,6 +94,12 @@ declare module "@elegant-router/types" {
     "plugin_tables_vtable": "/plugin/tables/vtable";
     "plugin_typeit": "/plugin/typeit";
     "plugin_video": "/plugin/video";
+    "project-detail": "/project-detail/:id";
+    "projects": "/projects";
+    "report-detail": "/report-detail/:id";
+    "reports": "/reports";
+    "review-records": "/review-records";
+    "templates": "/templates";
     "user-center": "/user-center";
   };
 
@@ -138,13 +151,26 @@ declare module "@elegant-router/types" {
     | "500"
     | "about"
     | "alova"
+    | "bid-generate"
+    | "bid-parse"
+    | "bid-review"
     | "function"
+    | "generate-records"
     | "home"
     | "iframe-page"
     | "login"
     | "manage"
+    | "materials"
     | "multi-menu"
+    | "parse-records"
+    | "parse-result"
     | "plugin"
+    | "project-detail"
+    | "projects"
+    | "report-detail"
+    | "reports"
+    | "review-records"
+    | "templates"
     | "user-center"
   >;
 
@@ -173,6 +199,9 @@ declare module "@elegant-router/types" {
     | "alova_request"
     | "alova_scenes"
     | "alova_user"
+    | "bid-generate"
+    | "bid-parse"
+    | "bid-review"
     | "function_hide-child_one"
     | "function_hide-child_three"
     | "function_hide-child_two"
@@ -181,13 +210,17 @@ declare module "@elegant-router/types" {
     | "function_super-page"
     | "function_tab"
     | "function_toggle-auth"
+    | "generate-records"
     | "home"
     | "manage_menu"
     | "manage_role"
     | "manage_user-detail"
     | "manage_user"
+    | "materials"
     | "multi-menu_first_child"
     | "multi-menu_second_child_home"
+    | "parse-records"
+    | "parse-result"
     | "plugin_barcode"
     | "plugin_charts_antv"
     | "plugin_charts_echarts"
@@ -207,6 +240,12 @@ declare module "@elegant-router/types" {
     | "plugin_tables_vtable"
     | "plugin_typeit"
     | "plugin_video"
+    | "project-detail"
+    | "projects"
+    | "report-detail"
+    | "reports"
+    | "review-records"
+    | "templates"
     | "user-center"
   >;
 

@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'SoybeanAdmin',
+    title: '智标云',
     updateTitle: 'System Version Update Notification',
     updateContent: 'A new version of the system has been detected. Do you want to refresh the page immediately?',
     updateConfirm: 'Refresh immediately',
@@ -188,7 +188,7 @@ const local: App.I18n.Schema = {
     function_request: 'Request',
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
-    manage: 'System Manage',
+    manage: 'System Settings',
     manage_user: 'User Manage',
     'manage_user-detail': 'User Detail',
     manage_role: 'Role Manage',
@@ -226,7 +226,20 @@ const local: App.I18n.Schema = {
     plugin_gantt_vtable: 'VTableGantt',
     plugin_typeit: 'Typeit',
     plugin_tables: 'Tables',
-    plugin_tables_vtable: 'VTable'
+    plugin_tables_vtable: 'VTable',
+    projects: 'Projects',
+    'project-detail': 'Project Detail',
+    'bid-parse': 'Bid Parsing',
+    'parse-records': 'Parse Records',
+    'parse-result': 'Parse Result Detail',
+    'bid-generate': 'Bid Generation',
+    'generate-records': 'Generation Records',
+    'bid-review': 'Bid Review',
+    'review-records': 'Review Records',
+    reports: 'Review Reports',
+    'report-detail': 'Report Detail',
+    templates: 'Template Center',
+    materials: 'Material Library'
   },
   page: {
     login: {

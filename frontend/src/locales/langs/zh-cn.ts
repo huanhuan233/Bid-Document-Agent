@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'Soybean 管理系统',
+    title: '智标云',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -188,7 +188,7 @@ const local: App.I18n.Schema = {
     function_request: '请求',
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
-    manage: '系统管理',
+    manage: '系统设置',
     manage_user: '用户管理',
     'manage_user-detail': '用户详情',
     manage_role: '角色管理',
@@ -226,7 +226,20 @@ const local: App.I18n.Schema = {
     plugin_gantt_vtable: 'VTableGantt',
     plugin_typeit: '打字机',
     plugin_tables: '表格',
-    plugin_tables_vtable: 'VTable'
+    plugin_tables_vtable: 'VTable',
+    projects: '项目管理',
+    'project-detail': '项目详情',
+    'bid-parse': '标书解析',
+    'parse-records': '解析记录',
+    'parse-result': '解析结果详情',
+    'bid-generate': '标书生成',
+    'generate-records': '生成记录',
+    'bid-review': '标书审查',
+    'review-records': '审查记录',
+    reports: '审查报告',
+    'report-detail': '报告详情',
+    templates: '模板中心',
+    materials: '企业素材库'
   },
   page: {
     login: {

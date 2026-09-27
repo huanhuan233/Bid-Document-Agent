@@ -110,6 +110,13 @@ declare namespace Env {
     readonly VITE_PROXY_LOG?: CommonType.YesOrNo;
     /** The launch editor */
     readonly VITE_DEVTOOLS_LAUNCH_EDITOR?: import('vite-plugin-vue-devtools').VitePluginVueDevToolsOptions['launchEditor'];
+    /**
+     * Bid business data mode
+     *
+     * - demo: run all bid pages on local fixtures (no backend write)
+     * - api:  use the real backend through src/service/request
+     */
+    readonly VITE_BID_DATA_MODE?: 'demo' | 'api';
   }
 }
 
