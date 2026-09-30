@@ -42,7 +42,7 @@ const statusType = (s: string) => (s === '已完成' ? 'success' : s === '审查
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="审查记录" subtitle="查看历史审查任务与报告入口">
       <template #actions>
         <DemoBadge />

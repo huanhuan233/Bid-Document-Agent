@@ -56,11 +56,6 @@ declare module "@elegant-router/types" {
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
-    "manage": "/manage";
-    "manage_menu": "/manage/menu";
-    "manage_role": "/manage/role";
-    "manage_user": "/manage/user";
-    "manage_user-detail": "/manage/user-detail/:id";
     "materials": "/materials";
     "multi-menu": "/multi-menu";
     "multi-menu_first": "/multi-menu/first";
@@ -159,7 +154,6 @@ declare module "@elegant-router/types" {
     | "home"
     | "iframe-page"
     | "login"
-    | "manage"
     | "materials"
     | "multi-menu"
     | "parse-records"
@@ -212,10 +206,6 @@ declare module "@elegant-router/types" {
     | "function_toggle-auth"
     | "generate-records"
     | "home"
-    | "manage_menu"
-    | "manage_role"
-    | "manage_user-detail"
-    | "manage_user"
     | "materials"
     | "multi-menu_first_child"
     | "multi-menu_second_child_home"

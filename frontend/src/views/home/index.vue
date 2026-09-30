@@ -101,7 +101,7 @@ const progressStatus = (p: number) => (p >= 60 ? 'success' : p >= 30 ? 'warning'
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px lt-sm:p-12px">
+  <div class="flex-col gap-16px overflow-auto p-16px lt-sm:p-12px [&>*]:shrink-0">
     <!-- 标题行 -->
     <div class="flex flex-wrap items-end justify-between gap-16px">
       <div class="min-w-0">

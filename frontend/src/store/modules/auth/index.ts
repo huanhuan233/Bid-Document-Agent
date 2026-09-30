@@ -8,18 +8,13 @@ import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
 import { demoAuthUser } from '@/fixtures/bid/auth';
+import { isDemoActive } from '@/service/providers/bid/data-mode';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
 import { clearAuthStorage, getToken } from './shared';
 
-/** 仅在显式 demo 模式下允许演示登录（不请求后端、不发演示写请求） */
-function isBidDemoMode() {
-  return (import.meta.env.VITE_BID_DATA_MODE || 'demo') === 'demo';
-}
-
-function isDemoToken(token: string | null) {
-  return Boolean(token && token.startsWith('demo-'));
-}
+/** 仅在演示（Mock）模式下允许演示登录（不请求后端、不发演示写请求）；运行时可切换 */
+const isBidDemoMode = isDemoActive;
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -173,7 +168,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   async function getUserInfo() {
     // 演示模式：本地 token 直接返回演示用户，不请求后端
-    if (isBidDemoMode() && isDemoToken(getToken())) {
+    if (isBidDemoMode()) {
       Object.assign(userInfo, demoAuthUser);
       return true;
     }

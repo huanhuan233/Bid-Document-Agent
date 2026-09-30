@@ -158,7 +158,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <div class="flex flex-wrap items-end justify-between gap-12px">
       <div class="min-w-0">
         <h1 class="m-0 text-26px font-600 c-text">标书审查中心</h1>

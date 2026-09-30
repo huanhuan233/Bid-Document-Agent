@@ -33,6 +33,7 @@ import {
   demoWorkbenchStats
 } from '@/fixtures/bid';
 import { loadDemoState, resetDemoState, saveDemoState } from './demo-state';
+import { currentDataMode } from './data-mode';
 
 /** 统一的数据返回包装：state 区分 ok / not-integrated / error，页面据此渲染状态 */
 export type BidResult<T> =
@@ -93,6 +94,8 @@ export interface BidProvider {
   getTrend(): Promise<BidResult<Bid.TrendPointVM[]>>;
   /** 解析 */
   getParseFiles(projectId: string): Promise<BidResult<Bid.ParseFileVM[]>>;
+  /** 上传文件入库：仅登记元数据并入队（status=pending），真实解析由后端能力完成 */
+  createParseFile(input: { projectId: string; name: string; type: string; sizeLabel: string }): Promise<BidResult<Bid.ParseFileVM>>;
   getClauses(fileId: string): Promise<BidResult<Bid.ClauseVM[]>>;
   updateClause(clause: Bid.ClauseVM): Promise<BidResult<Bid.ClauseVM>>;
   getAnnotations(fileId: string): Promise<BidResult<Bid.DocAnnotationVM[]>>;
@@ -132,6 +135,7 @@ function createDemoProvider(): BidProvider {
   const st = loadDemoState();
   let todos: Bid.TodoVM[] = st.todos ? clone(st.todos) : clone(demoTodos);
   let notices: Bid.NoticeVM[] = st.notices ? clone(st.notices) : clone(demoNotices);
+  let parseFiles: Bid.ParseFileVM[] = st.parseFiles ? clone(st.parseFiles) : clone(demoParseFiles);
   let draft: Bid.GenerationDraftVM | null = st.draft === undefined ? null : st.draft ? clone(st.draft) : null;
 
   function persistDraft() {
@@ -157,7 +161,24 @@ function createDemoProvider(): BidProvider {
     getRiskAlerts: () => delay(ok(clone(demoRiskAlerts))),
     getTrend: () => delay(ok(clone(demoTrend))),
 
-    getParseFiles: projectId => delay(ok(clone(demoParseFiles.filter(f => f.projectId === projectId)))),
+    getParseFiles: projectId => delay(ok(clone(parseFiles.filter(f => f.projectId === projectId)))),
+    createParseFile: input => {
+      const d = new Date();
+      const p2 = (n: number) => String(n).padStart(2, '0');
+      const file: Bid.ParseFileVM = {
+        id: `PF-U${d.getTime()}`,
+        projectId: input.projectId,
+        name: input.name,
+        type: input.type,
+        sizeLabel: input.sizeLabel,
+        pages: 0,
+        status: 'pending',
+        uploadedAt: `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`
+      };
+      parseFiles = [file, ...parseFiles];
+      saveDemoState({ parseFiles });
+      return delay(ok(clone(file)), 300);
+    },
     getClauses: fileId => delay(ok(clone(demoClauses.filter(c => c.fileId === fileId)))),
     updateClause: clause => {
       const idx = demoClauses.findIndex(c => c.id === clause.id);
@@ -225,8 +246,9 @@ function createDemoProvider(): BidProvider {
     resetDemo: () => {
       todos = clone(demoTodos);
       notices = clone(demoNotices);
+      parseFiles = clone(demoParseFiles);
       draft = demoDefaultDraft();
-      saveDemoState({ todos, notices, draft });
+      saveDemoState({ todos, notices, draft, parseFiles });
     }
   };
 }
@@ -246,6 +268,7 @@ function createApiProvider(): BidProvider {
     getRiskAlerts: () => n('风险预警'),
     getTrend: () => n('任务趋势'),
     getParseFiles: () => n('解析文件列表'),
+    createParseFile: () => n('文件上传入库'),
     getClauses: () => n('结构化条款'),
     updateClause: () => n('条款更新'),
     getAnnotations: () => n('版式标注'),
@@ -279,8 +302,38 @@ function createApiProvider(): BidProvider {
   };
 }
 
-export const bidProvider: BidProvider =
-  (import.meta.env.VITE_BID_DATA_MODE || 'demo') === 'api' ? createApiProvider() : createDemoProvider();
+/**
+ * 运行时按当前数据模式（demo/api）转发调用的 Provider。
+ * 头部开关或登录页切换模式后立即生效（无需重启）；每次调用实时解析当前模式。
+ */
+function createBidProviderProxy(): BidProvider {
+  let demoProvider: BidProvider | null = null;
+  let apiProvider: BidProvider | null = null;
+
+  const resolve = (): BidProvider => {
+    if (currentDataMode() === 'api') {
+      apiProvider ??= createApiProvider();
+      return apiProvider;
+    }
+    demoProvider ??= createDemoProvider();
+    return demoProvider;
+  };
+
+  return new Proxy({} as BidProvider, {
+    get(_target, prop: string | symbol) {
+      const provider = resolve();
+      const value = Reflect.get(provider as object, prop);
+      return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(provider) : value;
+    }
+  });
+}
+
+export const bidProvider: BidProvider = createBidProviderProxy();
+
+/** 当前数据模式（demo=Mock / api=真实接口），供 UI 展示 */
+export { currentDataMode } from './data-mode';
+export type { BidDataMode } from './data-mode';
+export { isDemoActive, readStoredDataMode, setDataMode } from './data-mode';
 
 /** 供外部读取演示状态（重置按钮等） */
 export { resetDemoState };

@@ -101,7 +101,7 @@ function editTagsNotIntegrated() {
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="企业素材库" subtitle="集中管理企业资质、案例、人员、证书、制度文档与可复用投标素材">
       <template #actions>
         <DemoBadge />

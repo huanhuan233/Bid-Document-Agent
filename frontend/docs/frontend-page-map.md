@@ -13,7 +13,9 @@
 | 5 | 模板中心 | 模板列表 | `/templates` | `templates` | 模板中心.png |
 | 6 | 知识库 | 企业素材库 | `/materials` | `materials` | 素材库.png |
 | 7 | 审查报告 | 报告列表 | `/reports` | `reports` | 审查报告详情.png（列表为落点） |
-| 8 | 系统设置 | 用户/角色/菜单管理 | `/manage/user` 等 | `manage_user` 等 | 复用 Soybean 现有页面 |
+
+> 注：原第 8 项「系统设置」（复用 Soybean 的 `manage_user`/`manage_role`/`manage_menu` 演示页）已整体移除，
+> 待后续基于后端 `/api/v1/system` 真实接口重建用户/角色管理页面。
 
 ## 隐藏详情/辅助入口（不占一级菜单，父级菜单保持高亮）
 
@@ -35,8 +37,8 @@
 ## 数据分层
 
 - 页面 `src/views/**`：只调用 `bidProvider`，不散落请求代码。
-- 数据服务 `src/service/providers/bid/`：`BidProvider` 接口 + demo/api 双实现。
-  模式由 `VITE_BID_DATA_MODE=demo|api` 控制。
+- 数据服务 `src/service/providers/bid/`：`BidProvider` 接口 + demo/api 双实现，`bidProvider` 为运行时 Proxy。
+  默认模式由 `VITE_BID_DATA_MODE=demo|api` 控制，可通过头部开关运行时切换（localStorage 持久化）。
 - 演示数据 `src/fixtures/bid/`：项目、解析文件、条款、版式、章节、整改意见、问题、
   报告、模板、素材互相关联（同一项目族 P-2026-001…005 / PF-001…003 /
   RV-2026-001 / RR-2026-005 / IS-001…012 / OP-001…004）。

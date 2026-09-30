@@ -13,6 +13,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '403',
       i18nKey: 'route.403',
+      hideInMenu: true,
       constant: true
     }
   },
@@ -23,6 +24,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '404',
       i18nKey: 'route.404',
+      hideInMenu: true,
       constant: true
     }
   },
@@ -33,6 +35,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '500',
       i18nKey: 'route.500',
+      hideInMenu: true,
       constant: true
     }
   },
@@ -241,7 +244,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     props: true,
     meta: {
       title: 'iframe-page',
-      i18nKey: 'route.iframe-page'
+      i18nKey: 'route.iframe-page',
+      hideInMenu: true
     }
   },
   {
@@ -252,57 +256,9 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'login',
       i18nKey: 'route.login',
+      hideInMenu: true,
       constant: true
     }
-  },
-  {
-    name: 'manage',
-    path: '/manage',
-    component: 'layout.base',
-    meta: {
-      title: 'manage',
-      i18nKey: 'route.manage',
-      icon: 'mdi:cog-outline',
-      order: 8
-    },
-    children: [
-      {
-        name: 'manage_menu',
-        path: '/manage/menu',
-        component: 'view.manage_menu',
-        meta: {
-          title: 'manage_menu',
-          i18nKey: 'route.manage_menu'
-        }
-      },
-      {
-        name: 'manage_role',
-        path: '/manage/role',
-        component: 'view.manage_role',
-        meta: {
-          title: 'manage_role',
-          i18nKey: 'route.manage_role'
-        }
-      },
-      {
-        name: 'manage_user',
-        path: '/manage/user',
-        component: 'view.manage_user',
-        meta: {
-          title: 'manage_user',
-          i18nKey: 'route.manage_user'
-        }
-      },
-      {
-        name: 'manage_user-detail',
-        path: '/manage/user-detail/:id',
-        component: 'view.manage_user-detail',
-        meta: {
-          title: 'manage_user-detail',
-          i18nKey: 'route.manage_user-detail'
-        }
-      }
-    ]
   },
   {
     name: 'materials',

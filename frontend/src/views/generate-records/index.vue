@@ -44,7 +44,7 @@ const statusType = (s: string) => (s === '已完成' ? 'success' : s === '生成
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="生成记录" subtitle="查看常规生成与整改修订任务">
       <template #actions>
         <DemoBadge />

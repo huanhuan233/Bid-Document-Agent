@@ -49,7 +49,7 @@ function goDetail(row: Bid.ParseRecordVM) {
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="解析记录" subtitle="查看历史解析任务的状态、结果与详情入口">
       <template #actions>
         <DemoBadge />

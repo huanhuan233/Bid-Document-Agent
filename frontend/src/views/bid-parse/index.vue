@@ -154,9 +154,41 @@ function exportResult() {
   window.$message?.success('已导出演示数据 JSON');
 }
 
-function onLocalUpload(file: File) {
-  window.$message?.info(`已选择本地文件「${file.name}」：演示环境不解析真实文件，解析结果区将显示“尚无解析结果”`);
-  return false;
+/** 解析中心上传入库：仅支持 PDF / Word，选择后登记元数据并加入解析队列 */
+const uploadBusy = ref(false);
+
+async function onParseUpload(file: File) {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (!['pdf', 'doc', 'docx'].includes(ext)) {
+    window.$message?.error('仅支持 PDF / Word（.pdf、.doc、.docx）文件');
+    return false;
+  }
+  if (file.size > 100 * 1024 * 1024) {
+    window.$message?.error('文件大小不能超过 100MB');
+    return false;
+  }
+  uploadBusy.value = true;
+  try {
+    const res = await bidProvider.createParseFile({
+      projectId: projectId.value,
+      name: file.name,
+      type: fileType.value,
+      sizeLabel: `${(file.size / 1024 / 1024).toFixed(1)} MB`
+    });
+    if (res.state === 'ok') {
+      await loadFiles();
+      activeFile.value = res.data;
+      stepActive.value = 0;
+      window.$message?.success(`「${file.name}」已上传入库，可在下方点击「开始解析」`);
+    } else {
+      window.$message?.warning(res.message);
+    }
+  } catch {
+    window.$message?.error('上传入库失败，请重试');
+  } finally {
+    uploadBusy.value = false;
+  }
+  return false; // 阻止 ElUpload 默认上传行为（入库由 provider 完成）
 }
 
 function goRecords() {
@@ -185,14 +217,17 @@ const evidenceRows = computed(() =>
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
-    <div class="flex flex-wrap items-end justify-between gap-12px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
+    <div class="flex flex-wrap items-end justify-between gap-12px shrink-0">
       <div class="min-w-0">
         <h1 class="m-0 text-26px font-600 c-text">标书解析中心</h1>
         <p class="mt-4px mb-0 text-13px c-secondary">解析招标文件、标准文件并提取结构化要求</p>
       </div>
       <div class="flex items-center gap-12px">
         <DemoBadge />
+        <ElUpload :show-file-list="false" :before-upload="onParseUpload" accept=".pdf,.doc,.docx">
+          <ElButton type="primary" icon="mdi:upload" :loading="uploadBusy">文件解析</ElButton>
+        </ElUpload>
         <ElButton @click="goRecords">
           <SvgIcon icon="mdi:history" class="mr-4px" /> 解析记录
         </ElButton>
@@ -208,7 +243,7 @@ const evidenceRows = computed(() =>
 
     <template v-else>
       <!-- 顶部操作条 -->
-      <ElCard shadow="never">
+      <ElCard shadow="never" class="shrink-0">
         <div class="flex flex-wrap items-center gap-12px">
           <span class="text-14px c-secondary">所属项目</span>
           <ElSelect v-model="projectId" class="w-260px">
@@ -220,7 +255,7 @@ const evidenceRows = computed(() =>
             <ElRadioButton value="技术规范">技术规范</ElRadioButton>
           </ElRadioGroup>
           <div class="ml-auto flex flex-wrap items-center gap-10px">
-            <ElUpload :show-file-list="false" :before-upload="onLocalUpload" accept=".pdf,.doc,.docx">
+            <ElUpload :show-file-list="false" :before-upload="onParseUpload" accept=".pdf,.doc,.docx">
               <ElButton icon="mdi:upload">上传文件</ElButton>
             </ElUpload>
             <ElButton type="primary" icon="mdi:play" :loading="parseStarted" @click="startParse">开始解析</ElButton>
@@ -229,12 +264,12 @@ const evidenceRows = computed(() =>
         </div>
       </ElCard>
 
-      <ElCard shadow="never">
+      <ElCard shadow="never" class="shrink-0">
         <StepBar :steps="steps" :active="stepActive" />
       </ElCard>
 
       <!-- 三栏主体 -->
-      <div class="grid gap-16px xl:grid-cols-[320px_1fr_360px]">
+      <div class="grid gap-16px xl:grid-cols-[320px_1fr_360px] shrink-0">
         <!-- 左：文件列表 -->
         <ElCard shadow="never" class="min-w-0">
           <template #header>
@@ -372,7 +407,7 @@ const evidenceRows = computed(() =>
       </div>
 
       <!-- 底部：解析统计 + 证据回链 -->
-      <div class="grid gap-16px lg:grid-cols-[1fr_1.4fr]">
+      <div class="grid gap-16px lg:grid-cols-[1fr_1.4fr] shrink-0">
         <ElCard shadow="never">
           <template #header>
             <span class="font-600">解析统计</span>

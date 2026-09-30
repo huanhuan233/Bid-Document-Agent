@@ -70,7 +70,7 @@ function saveEdit() {
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="项目列表" subtitle="管理投标项目，进入项目详情查看解析、生成、审查进展">
       <template #actions>
         <DemoBadge />

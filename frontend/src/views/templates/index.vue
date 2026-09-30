@@ -132,7 +132,7 @@ const coverColors = ['#dbeafe', '#dcfce7', '#fef3c7', '#fee2e2', '#ede9fe', '#cf
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="模板中心" subtitle="统一管理投标模板、章节版式与企业模板资产">
       <template #actions>
         <DemoBadge />

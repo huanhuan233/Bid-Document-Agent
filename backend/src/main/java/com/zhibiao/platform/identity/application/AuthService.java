@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
@@ -75,12 +76,16 @@ public class AuthService {
         if (!principal.isEnabled()) {
             throw new BizException("B1403", "账号已被禁用", 403);
         }
-        // 建立服务端会话并写入 SecurityContext
+        // 建立服务端会话并写入 SecurityContext。
+        // 注意：Spring Security 6 的 SecurityContextHolderFilter 不再在请求结束时自动持久化上下文，
+        // 手动登录必须显式把上下文写入会话属性，后续请求才能从会话恢复认证状态。
         var attrs = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         var session = attrs.getRequest().getSession(true);
+        var context = new SecurityContextImpl(
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
         session.setAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, principal.getUserId());
-        SecurityContextHolder.setContext(new SecurityContextImpl(
-                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())));
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+        SecurityContextHolder.setContext(context);
         List<String> roles = List.copyOf(principal.getRoleCodes());
         List<String> permissions = List.copyOf(permissionService.permissionCodesOf(principal.getUserId()));
         redis.delete(limitKey);

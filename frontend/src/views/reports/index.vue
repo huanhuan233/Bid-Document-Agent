@@ -59,7 +59,7 @@ function exportReport() {
 </script>
 
 <template>
-  <div class="flex-col gap-16px overflow-auto p-16px">
+  <div class="flex-col gap-16px overflow-auto p-16px [&>*]:shrink-0">
     <PageHeader title="审查报告" subtitle="审查报告列表，点击查看详情、分布与整改建议">
       <template #actions>
         <DemoBadge />

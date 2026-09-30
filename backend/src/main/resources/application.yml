@@ -4,7 +4,9 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:api,dev}
   datasource:
-    url: ${ZB_DB_URL:jdbc:mysql://localhost:3306/bid_platform?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&useSSL=false}
+    # 本机 3306 常被宿主机原生 MySQL 或其他项目占用，deploy/docker-compose.yml 将 MySQL 映射到 13310；
+    # 生产环境请通过 ZB_DB_URL 显式覆盖
+    url: ${ZB_DB_URL:jdbc:mysql://localhost:13310/bid_platform?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&useSSL=false}
     username: ${ZB_DB_USER:bid}
     password: ${ZB_DB_PASSWORD:bid}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,7 +20,9 @@ spring:
   data:
     redis:
       host: ${ZB_REDIS_HOST:localhost}
-      port: ${ZB_REDIS_PORT:6379}
+      # 本机 6379 常被其他项目占用，deploy/docker-compose.yml 将 Redis 映射到 16379；
+      # 生产环境请通过 ZB_REDIS_PORT 显式覆盖
+      port: ${ZB_REDIS_PORT:16379}
       password: ${ZB_REDIS_PASSWORD:}
       timeout: 3s
       lettuce:
@@ -27,6 +31,9 @@ spring:
   session:
     redis:
       namespace: bid:sess
+      # indexed：启用按 principal 索引的会话仓库（FindByIndexNameSessionRepository，
+      # AuthService 依赖它做"改密/禁用后失效既有会话"）
+      repository-type: indexed
       flush-mode: on-save
   rabbitmq:
     host: ${ZB_RABBIT_HOST:localhost}
@@ -94,11 +101,18 @@ zhibiao:
     bootstrap-admin-password: ${ZB_BOOTSTRAP_ADMIN_PASSWORD:}
     session-max-idle-minutes: 720
   storage:
-    endpoint: ${ZB_MINIO_ENDPOINT:http://localhost:9000}
-    access-key: ${ZB_MINIO_ACCESS_KEY:}
-    secret-key: ${ZB_MINIO_SECRET_KEY:}
+    # 本机 9000 常被其他项目占用，deploy/docker-compose.yml 将 MinIO 映射到 19000（控制台 19001）；
+    # 生产环境请通过 ZB_MINIO_ENDPOINT 显式覆盖
+    endpoint: ${ZB_MINIO_ENDPOINT:http://localhost:19000}
+    # 下方缺省仅用于本地开发，与 deploy/docker-compose.yml 中的 MinIO 凭证一致；
+    # 生产必须通过环境变量注入，不得使用开发缺省值
+    access-key: ${ZB_MINIO_ACCESS_KEY:bidminio}
+    secret-key: ${ZB_MINIO_SECRET_KEY:bidminio123}
     bucket: ${ZB_MINIO_BUCKET:bid-platform}
     presign-ttl-seconds: 300
+  cors:
+    # 允许跨域携带凭据的前端来源（逗号分隔）；生产请通过 ZB_CORS_ORIGINS 收敛为真实域名
+    allowed-origins: ${ZB_CORS_ORIGINS:http://localhost:10032,http://127.0.0.1:10032}
   secrets:
     # 主密钥（Base64, 32 字节），用于 Dify API Key 落库加密
     master-key: ${ZB_SECRET_MASTER_KEY:}

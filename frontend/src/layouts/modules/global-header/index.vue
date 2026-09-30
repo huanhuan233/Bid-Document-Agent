@@ -8,6 +8,7 @@ import GlobalBreadcrumb from '../global-breadcrumb/index.vue';
 import GlobalSearch from '../global-search/index.vue';
 import ThemeButton from './components/theme-button.vue';
 import UserAvatar from './components/user-avatar.vue';
+import DataModeSwitch from './components/data-mode-switch.vue';
 
 defineOptions({ name: 'GlobalHeader' });
 
@@ -36,6 +37,7 @@ const { isFullscreen, toggle } = useFullscreen();
       <GlobalBreadcrumb v-if="!appStore.isMobile" class="ml-12px" />
     </div>
     <div class="h-full flex-y-center justify-end">
+      <DataModeSwitch />
       <GlobalSearch v-if="themeStore.header.globalSearch.visible" />
       <div>
         <FullScreen v-if="!appStore.isMobile" :full="isFullscreen" @click="toggle" />

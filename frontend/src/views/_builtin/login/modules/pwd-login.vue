@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/modules/auth';
 import { useRouterPush } from '@/hooks/common/router';
 import { useForm, useFormRules } from '@/hooks/common/form';
 import { $t } from '@/locales';
+import { currentDataMode, setDataMode } from '@/service/providers/bid/data-mode';
 
 defineOptions({ name: 'PwdLogin' });
 
@@ -70,6 +71,15 @@ const accounts = computed<Account[]>(() => [
 async function handleAccountLogin(account: Account) {
   await authStore.login(account.userName, account.password);
 }
+
+/** 后端不可用时的开发入口：切到演示（Mock）模式并直接进入，不请求后端 */
+async function handleDemoLogin() {
+  setDataMode('demo');
+  await authStore.login(model.value.userName || '演示用户', 'demo');
+}
+
+/** 真实接口模式下展示演示入口（演示模式下主登录按钮本身就是免后端登录） */
+const showDemoEntry = currentDataMode() === 'api';
 </script>
 
 <template>
@@ -116,6 +126,9 @@ async function handleAccountLogin(account: Account) {
           {{ item.label }}
         </ElButton>
       </div>
+      <ElButton v-if="showDemoEntry" class="w-full" size="default" round :loading="authStore.loginLoading" @click="handleDemoLogin">
+        演示模式进入（Mock 数据，不连后端）
+      </ElButton>
     </ElSpace>
   </ElForm>
 </template>
